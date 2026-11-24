@@ -2,6 +2,8 @@
 
 The ALVR fork read live per-eye gaze, openness, and pupil diameter from a VIVE Focus 3 with the eye tracker module attached. The Android app used its existing OpenXR loader and session to call HTC’s `XR_HTC_eye_tracker` extension through a small Rust FFI wrapper. HTC’s Unity plugin supplied the native ABI definitions. The direct Wave Native SDK calls, such as `WVR_StartEyeTracking` and `WVR_GetEyeTracking`, belong to a separate API. [HTC OpenXR API reference](https://developer.vive.com/resources/openxr/unity/common-interface/) · [Wave Native SDK eye tracking reference](https://hub.vive.com/storage/docs/en-us/WVR_GetEyeTracking.html)
 
+The [ALVR source reference](ALVR_REFERENCE.md) includes the complete headset-tested Rust wrapper, the extension setup, the blink conversion, the APK manifest metadata, and the recorded headset observations.
+
 ## Port the headset-side code
 
 1. **Initialize the target app’s Android OpenXR loader** and enumerate extensions on the headset with `xrEnumerateInstanceExtensionProperties`. Look for `XR_HTC_eye_tracker`. The working ALVR client used `libopenxr_loader.so` and requested OpenXR `1.0.34` for Vive devices. Those were ALVR’s existing Vive settings.
@@ -72,4 +74,4 @@ ALVR later carried the readings in its tracking stream and exposed them as binar
 
 ## Handoff prompt
 
-> Use this README to add HTC VIVE per-eye tracking to the target repository. Find its Android OpenXR loader, instance creation, session lifecycle, and frame or input loop. Enable `XR_HTC_eye_tracker` when the runtime advertises it, check what actually reaches instance creation, and hook the tracker into the existing session. Start with an on-headset probe for left/right gaze and openness. Add pupil data if the target needs it. Carry the space, `XrTime`, and per-field validity through the target’s own tracking types. Report device-tested behavior separately from build-only results.
+> Use this README and `ALVR_REFERENCE.md` to add or review HTC VIVE per-eye tracking in the target repository. Compare the native structs and function pointers field by field against the original wrapper. Check Android OpenXR extension enablement and connect the tracker to the existing session lifecycle and input loop. Start with an on-headset probe for left/right openness and validity during a blink. Add gaze or pupil data if the target needs it. Preserve the relevant space, `XrTime`, and per-field validity in the target’s own tracking types. Report device-tested behavior separately from build-only results.
